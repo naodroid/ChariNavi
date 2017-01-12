@@ -29,14 +29,18 @@ class LocationStore extends ReduceStore<LocationState> {
     navigator.geolocation.getCurrentPosition(
           (position) => {
             //use debug location for indoor-demo
-            let lat = 35.8901548 //position.coords.latitude;
-            let lon = 136.3429181 //position.coords.longitude;
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+            if (lat < 35.7 || lat >= 36 || lon < 136.2 || lon >= 136.5) {
+              lat = 35.8901548
+              lon = 136.3429181
+            }
             this.onLocationReceived(lat, lon)
           },
           (error) => {
             //use debug location for indoor-demo
-            let lat = 35.8901548
-            let lon = 136.3429181
+            const lat = 35.8901548
+            const lon = 136.3429181
             this.onLocationReceived(lat, lon)
           },
           {enableHighAccuracy: true, timeout: 5000, maximumAge: 1000}

@@ -7,9 +7,9 @@ import {
 
 export default class PinnedMapImage extends Component {
   render() {
-    let lat = this.props.lat
-    let lon = this.props.lon
-    let url = "https://maps.google.com/maps/api/staticmap?center=" + lat + "," + lon + "&size=320x140&zoom=15&sensor=false"
+    const lat = this.props.lat
+    const lon = this.props.lon
+    const url = "https://maps.google.com/maps/api/staticmap?center=" + lat + "," + lon + "&size=320x140&zoom=15&sensor=false"
 
     return (
       <View style={styles.container}>

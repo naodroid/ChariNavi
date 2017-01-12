@@ -28,9 +28,9 @@ export default class MapImageCell extends Component {
   state : State
 
   render() {
-    let props = this.props
-    let lat = props.location.latitude
-    let lon = props.location.longitude
+    const props = this.props
+    const lat = props.location.latitude
+    const lon = props.location.longitude
 
     return (
       <TouchableHighlight

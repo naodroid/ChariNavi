@@ -76,16 +76,15 @@ export default class MachineListPage extends Component {
     );
   }
   onListUpdated() {
-    let state = machineStore.getState();
+    const state = machineStore.getState();
     this.setState({
       loading: state.loading,
       list: state.list
     })
   }
   renderRow(item: VendingMachine) {
-
-    let lat = item.location.latitude
-    let lon = item.location.longitude
+    const lat = item.location.latitude
+    const lon = item.location.longitude
 
     return (
       <MapImageCell

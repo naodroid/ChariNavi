@@ -43,7 +43,7 @@ export default class TopPage extends Component {
   }
 
   render() {
-    var page;
+    let page;
     if (this.state.selectedTab == 0) {
       page = (<MachineListPage navigator={this.props.navigator}/>);
     } else {

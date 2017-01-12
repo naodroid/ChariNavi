@@ -33,7 +33,7 @@ class ToiletStore extends ReduceStore<ToiletState> {
       return state.changeLoading(true)
     }
     if (action instanceof ToiletAction.OnListReceived) {
-      let a : ToiletAction.OnListReceived = action
+      const a : ToiletAction.OnListReceived = action
       return state.changeList(a.list).changeLoading(false)
     }
     if (action instanceof ToiletAction.OnFetchError) {
@@ -77,11 +77,11 @@ class ToiletStore extends ReduceStore<ToiletState> {
     }).done();
   }
   convert(json : any, myLocation : Location) : Toilet {
-    let name = json.loc.value
-    let lat = parseFloat(json.lat.value)
-    let lon = parseFloat(json.lon.value)
-    let loc = new Location(lat, lon)
-    let d = loc.distanceTo(myLocation)
+    const name = json.loc.value
+    const lat = parseFloat(json.lat.value)
+    const lon = parseFloat(json.lon.value)
+    const loc = new Location(lat, lon)
+    const d = loc.distanceTo(myLocation)
     return new Toilet(name, loc, d)
   }
 

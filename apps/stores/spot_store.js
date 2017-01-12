@@ -19,18 +19,18 @@ export default class SpotStore extends ReduceStore<SpotState> {
   }
   reduce(state : SpotState, action : Action) : SpotState {
     if (action instanceof SpotAction.RequestList) {
-      let a :SpotAction.RequestList = action
+      const a :SpotAction.RequestList = action
       return state.changeLoading(true).changeLocation(a.location)
     }
     if (action instanceof SpotAction.OnListReceived) {
-      let a : SpotAction.OnListReceived = action
+      const a : SpotAction.OnListReceived = action
       if (a.location != state.location) {
         return state
       }
       return state.changeList(a.list).changeLoading(false)
     }
     if (action instanceof SpotAction.OnFetchError) {
-      let a : SpotAction.FetchError = action
+      const a : SpotAction.FetchError = action
       if (a.location != state.location) {
         return state
       }

@@ -90,12 +90,12 @@ export default class LocationDetailPage extends Component {
   }
 
   render() {
-    let route = this.props.route
-    let loc = route.location
-    let name = route.itemName
-    let distance = Math.floor(route.distance) + 'm'
+    const route = this.props.route
+    const loc = route.location
+    const name = route.itemName
+    const distance = Math.floor(route.distance) + 'm'
 
-    var bottomView
+    let bottomView
     if (this.state.loading || this.state.list == null) {
       bottomView = (<ActivityIndicator style={commonStyles.indicator}/>)
     } else {
@@ -106,8 +106,8 @@ export default class LocationDetailPage extends Component {
         renderRow={(item) => this.renderRow(item)}
       />)
     }
-    let myLocation = locationStore.getState().location
-    var markers = []
+    const myLocation = locationStore.getState().location
+    let markers = []
     markers.push((<MapView.Marker
       key='Target'
       coordinate={loc}

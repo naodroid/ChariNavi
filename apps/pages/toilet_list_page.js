@@ -77,7 +77,7 @@ export default class MachineListPage extends Component {
     );
   }
   onListUpdated() {
-    let state = toiletStore.getState();
+    const state = toiletStore.getState();
     this.setState({
       loading: state.loading,
       list: state.list

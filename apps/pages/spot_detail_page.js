@@ -45,15 +45,15 @@ export default class SpotDetailPage extends Component {
   }
   //render------
   render() {
-    let spot = this.props.route.spot
-    let loc = spot.location
+    const spot = this.props.route.spot
+    const loc = spot.location
 
-    let imgs = spot.images.map(url =>
+    const imgs = spot.images.map(url =>
       (<Image style={styles.imageStyle} resizeMode='cover' key={url} source={{uri : url}}/>)
     )
 
-    let myLocation = locationStore.getState().location
-    var markers = []
+    const myLocation = locationStore.getState().location
+    let markers = []
     markers.push((<MapView.Marker
       key='Target'
       coordinate={loc}
