@@ -100,9 +100,10 @@ export default class LocationDetailPage extends Component {
       bottomView = (<ActivityIndicator style={commonStyles.indicator}/>)
     } else {
       const ds = new ListView.DataSource({rowHasChanged : (r1, r2) => r1 !== r2})
+      let list = ["", ...this.state.list]
       bottomView = (<ListView
         style={commonStyles.listView}
-        dataSource={ds.cloneWithRows(this.state.list)}
+        dataSource={ds.cloneWithRows(list)}
         renderRow={(item) => this.renderRow(item)}
       />)
     }
@@ -144,26 +145,31 @@ export default class LocationDetailPage extends Component {
         {//BottomArea
         }
         <View style={styles.bottom_view}>
-          <Text style={{margin : 8}}>近隣の観光スポット</Text>
           {bottomView}
         </View>
       </View>
     )
   }
-  renderRow(item: Spot) {
-    console.log("D:" + item.distance)
+  renderRow(item: any) {
+    if (item instanceof Spot) {
+      return (
+        <SpotImageCell
+          name={item.name}
+          distance={item.distance}
+          imageUrl={item.images[0]}
+          onPress={() => this.onItemSelected(item)}
+        />
+      )
+    }
     return (
-      <SpotImageCell
-        name={item.name}
-        distance={item.distance}
-        imageUrl={item.images[0]}
-        onPress={() => this.onItemSelected(item)}
-      />
+      <Text style={{margin : 8}}>近隣の観光スポット</Text>
     )
   }
-  onItemSelected(item: Spot) {
-    let route = SpotDetailPage.createRoute(item)
-    this.props.navigator.push(route)
+  onItemSelected(item: any) {
+    if (item instanceof Spot) {
+      let route = SpotDetailPage.createRoute(item)
+      this.props.navigator.push(route)
+    }
   }
   onStateUpdated() : void {
     let state = this.store.getState()
