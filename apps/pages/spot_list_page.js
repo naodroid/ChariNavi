@@ -1,60 +1,63 @@
-/* @flow */
 import React, { Component } from 'react'
 import {
-  Platform,
   StyleSheet,
+  Platform,
+  Navigator,
   View,
   Text,
   Image,
-  ActivityIndicator,
   ListView,
-  TouchableHighlight,
-} from 'react-native'
+  ActivityIndicator,
+} from 'react-native';
 
 import { List } from 'immutable'
 
-import VendingMachine from '../entities/vending_machine'
-import LocationDetailPage from './location_detail_page'
-import MapImageCell from '../views/map_image_cell'
+import SpotDetailPage from './spot_detail_page'
+
+import SpotImageCell from '../views/spot_image_cell'
+import commonStyles, { cellStyles } from '../styles/common_styles'
+import elevations from '../styles/elevations'
+
+import SpotActions from '../actions/spot_actions'
+import SpotStore from '../stores/spot_store'
+import Spot from '../entities/spot'
 
 import dispatcher from '../dispatcher/dispatcher'
-import locationStore from '../stores/location_store'
-import machineStore from '../stores/vending_machine_store'
-import commonStyles from '../styles/common_styles'
 
-//--------------------
+//-------------------
 type Props = {
   navigator : Navigator,
 }
 type State = {
   loading : boolean,
-  list : List,
+  list : List
 }
 
-//--------------------------------------
-export default class MachineListPage extends Component {
+export default class SpotListPage extends Component {
   props : Props
   state : State
-  storeSubscription : Function
+  store : SpotStore
+  storeSubscription : any
 
   constructor() {
-    super();
+    super()
     this.state = {
       loading : false,
-      list: null,
+      list : null,
     }
+    this.store = new SpotStore(dispatcher)
   }
   componentDidMount() {
-    machineStore.requestListForCurrentLocation()
-    this.storeSubscription = machineStore.addListener(
-      () => {this.onListUpdated()},
-      (error) => {},
+    this.store.requestListForCurrentLocation()
+    this.storeSubscription = this.store.addListener(
+      () => {this.onStateUpdated()},
+      (error) => {}
     )
   }
   componentWillUnmount() {
     this.storeSubscription.remove()
   }
-
+  //-----------------------------
   render() {
     if (this.state.loading || this.state.list == null) {
       return (
@@ -75,32 +78,28 @@ export default class MachineListPage extends Component {
       </View>
     )
   }
-  onListUpdated() {
-    const state = machineStore.getState();
-    this.setState({
-      loading: state.loading,
-      list: state.list
-    })
-  }
-  renderRow(item: VendingMachine) {
-    const lat = item.location.latitude
-    const lon = item.location.longitude
-
+  renderRow(item : Spot) {
     return (
-      <MapImageCell
-        location={item.location}
+      <SpotImageCell
         name={item.name}
         distance={item.distance}
+        imageUrl={item.images[0]}
         onPress={() => this.onItemSelected(item)}
-        />
+      />
     )
   }
-  onItemSelected(item: VendingMachine) {
-    let route = LocationDetailPage.createRoute('自販機詳細', item.name, item.location, item.distance)
+  onItemSelected(item : Spot) {
+    let route = SpotDetailPage.createRoute(item)
     this.props.navigator.push(route)
   }
+  onStateUpdated() {
+    const state = this.store.getState()
+    this.setState({
+      loading : state.loading,
+      list : state.list,
+    })
+  }
 }
-
 
 //
 const styles = StyleSheet.create({

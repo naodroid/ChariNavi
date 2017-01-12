@@ -5,19 +5,27 @@ import Spot from '../entities/spot'
 import SpotState from './spot_state'
 
 import dispatcher from '../dispatcher/dispatcher'
+import locationStore from './location_store'
 
 import * as SpotAction from '../actions/spot_actions'
-
+import * as LocationAction from '../actions/location_actions'
 
 export default class SpotStore extends ReduceStore<SpotState> {
+  instance : any
   constructor(location : Location) {
     super(dispatcher)
     this.location = location
+    this.instance = this
   }
   getInitialState() : SpotState {
     return new SpotState().changeLocation(this.location)
   }
   reduce(state : SpotState, action : Action) : SpotState {
+    if (action instanceof LocationAction.OnLocationReceived) {
+      this.requestList(action.location)
+      console.log("LOCATION_RECEIVED")
+      return state
+    }
     if (action instanceof SpotAction.RequestList) {
       const a :SpotAction.RequestList = action
       return state.changeLoading(true).changeLocation(a.location)
@@ -40,10 +48,19 @@ export default class SpotStore extends ReduceStore<SpotState> {
   }
 
   //action creators--------------------------
-  requestList(location: Location) : void {
-    if (this.getState().loading) {
-      return
+  requestListForCurrentLocation() : void {
+    new SpotAction.RequestList().dispatch()
+    let state = locationStore.getState()
+    if (state.location != null) {
+      console.log("A")
+      this.requestList(state.location)
+    } else {
+      console.log("B")
+      locationStore.requestLocation()
     }
+  }
+  requestList(location: Location) : void {
+    console.log("REQUET_LIST")
     new SpotAction.RequestList(location).dispatch()
 
     let url = "https://sparql.odp.jig.jp/data/sparql"
@@ -59,7 +76,7 @@ export default class SpotStore extends ReduceStore<SpotState> {
         rdf:label ?label ;\
         geo:lat ?lat ;\
         geo:long ?lon ;\
-        schema:image ?image ;\
+        schema:image ?image.\
         filter(LANG(?label)='ja' && ?lat >= 35.5 && ?lat <= 36) .\
         \
         OPTIONAL { ?s rdf:comment ?comment } .\
@@ -91,6 +108,7 @@ export default class SpotStore extends ReduceStore<SpotState> {
         return list.sort((a, b) => a.distance - b.distance)
       })
       .then(list => {
+        console.log("RECEIVED")
         new SpotAction.OnListReceived(location, list).dispatch()
       }, error => {
         console.log("error:" + error)

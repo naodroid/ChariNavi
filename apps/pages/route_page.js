@@ -9,6 +9,7 @@ import {
   Text,
   View,
   Button,
+  Image,
   Platform,
   TouchableOpacity,
 } from 'react-native'
@@ -111,6 +112,7 @@ export default class RoutePage extends Component {
   renderTitle(route : Route, navigator : Navigator, index : number, navState : any) {
     return (
       <View style={styles.titleContainer}>
+        <Image source={require('../../img/ic_directions_bike.png')}/>
         <Text style={styles.titleText}>
           {route.pageTitle}
         </Text>
@@ -141,6 +143,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flex : 1,
+    flexDirection : 'row',
     alignItems : 'center',
     justifyContent: 'center',
   },

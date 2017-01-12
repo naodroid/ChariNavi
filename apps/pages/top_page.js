@@ -11,6 +11,7 @@ import {
 
 import MachineListPage from './machine_list_page'
 import ToiletListPage from './toilet_list_page'
+import SpotListPage from './spot_list_page'
 import Route from '../route/route'
 import commonShadow from '../styles/common_shadow'
 import elevations from '../styles/elevations'
@@ -43,11 +44,14 @@ export default class TopPage extends Component {
   }
 
   render() {
-    let page;
-    if (this.state.selectedTab == 0) {
+    const tab = this.state.selectedTab
+    let page : Component
+    if (tab == 0) {
       page = (<MachineListPage navigator={this.props.navigator}/>);
-    } else {
+    } else if (tab == 1) {
       page = (<ToiletListPage navigator={this.props.navigator}/>);
+    } else {
+      page = (<SpotListPage navigator={this.props.navigator}/>);
     }
 
     return (
@@ -65,6 +69,12 @@ export default class TopPage extends Component {
             image={require('../../img/ic_wc.png')}
             selected={this.state.selectedTab == 1}
             onPress={() => this.onTabSelected(1)}
+            />
+          <TabArea
+            title="観光"
+            image={require('../../img/ic_restaurant.png')}
+            selected={this.state.selectedTab == 2}
+            onPress={() => this.onTabSelected(2)}
             />
         </View>
       </View>
