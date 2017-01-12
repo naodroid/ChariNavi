@@ -32,7 +32,7 @@ export default class TopPage extends Component {
     return 'top_page'
   }
   static createRoute() : Route {
-    return new Route(TopPage.pageName, "ChariNavi")
+    return new Route(TopPage.pageName, "いけチャリ")
   }
 
   constructor() {

@@ -104,7 +104,7 @@ export default class SpotStore extends ReduceStore<SpotState> {
       var find = false
       for (var i = 0; i < ret.length; i++) {
         let s2 = ret[i]
-        if (s2.name == s.name) {
+        if (s2.name === s.name) {
           s2.addImage(s.images[0])
           find = true
           break
