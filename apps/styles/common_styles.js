@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import commonShadow from './common_shadow'
+import elevations from './elevations'
 
 const commonStyles = StyleSheet.create({
   defaultShadow: {
@@ -25,5 +26,35 @@ const commonStyles = StyleSheet.create({
   },
 
 })
+const cellStyles = StyleSheet.create({
+  parent: {
+    height: 120,
+    flexDirection : 'column',
+    backgroundColor: '#FFF',
+    margin: 8,
+    elevation : elevations.contentsCell,
+    ...commonShadow,
+  },
+  mainContent: {
+    flex : 1,
+    marginBottom : 20,
+  },
+  textArea : {
+    flexDirection : 'row',
+    backgroundColor : '#FFF'
+  },
+  name : {
+    flex : 1,
+    fontSize : 14,
+    color : '#222',
+  },
+  distance: {
+    fontSize : 12,
+    color : '#222',
+  }
+})
 
 export default commonStyles
+export {
+  cellStyles
+}

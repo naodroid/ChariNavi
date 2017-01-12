@@ -59,11 +59,11 @@ export default class SpotStore extends ReduceStore<SpotState> {
         rdf:label ?label ;\
         geo:lat ?lat ;\
         geo:long ?lon ;\
+        schema:image ?image ;\
         filter(LANG(?label)='ja' && ?lat >= 35.5 && ?lat <= 36) .\
         \
         OPTIONAL { ?s rdf:comment ?comment } .\
         OPTIONAL { ?s jrrk:openingHours ?openingHours }.\
-        OPTIONAL { ?s schema:image ?image} .\
         OPTIONAL { ?s odp:regularHoliday ?holiday } .\
         OPTIONAL { ?s schema:price ?price }.\
         OPTIONAL { ?s schema:description ?desc filter(LANG(?desc)='ja')} .\

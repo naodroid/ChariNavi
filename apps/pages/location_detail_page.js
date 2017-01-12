@@ -21,7 +21,7 @@ import SpotState from '../stores/spot_state'
 import Spot from '../entities/spot'
 import Location from '../entities/location'
 import Route from '../route/route'
-import MapImageCell from '../views/map_image_cell'
+import SpotImageCell from '../views/spot_image_cell'
 import SpotDetailPage from './spot_detail_page'
 
 import dispatcher from '../dispatcher/dispatcher'
@@ -151,11 +151,12 @@ export default class LocationDetailPage extends Component {
     )
   }
   renderRow(item: Spot) {
+    console.log("D:" + item.distance)
     return (
-      <MapImageCell
-        location={item.location}
+      <SpotImageCell
         name={item.name}
         distance={item.distance}
+        imageUrl={item.images[0]}
         onPress={() => this.onItemSelected(item)}
       />
     )
