@@ -11,19 +11,19 @@ import * as SpotAction from '../actions/spot_actions'
 import * as LocationAction from '../actions/location_actions'
 
 export default class SpotStore extends ReduceStore<SpotState> {
-  instance : any
-  constructor(location : Location) {
+  requireImage : boolean
+  constructor(location : Location, requireImage: boolean) {
     super(dispatcher)
     this.location = location
-    this.instance = this
+    this.requireImage = requireImage
   }
   getInitialState() : SpotState {
     return new SpotState().changeLocation(this.location)
   }
   reduce(state : SpotState, action : Action) : SpotState {
     if (action instanceof LocationAction.OnLocationReceived) {
-      this.requestList(action.location)
-      console.log("LOCATION_RECEIVED")
+      this.location = state.location
+      this.requestList()
       return state
     }
     if (action instanceof SpotAction.RequestList) {
@@ -52,40 +52,67 @@ export default class SpotStore extends ReduceStore<SpotState> {
     new SpotAction.RequestList().dispatch()
     let state = locationStore.getState()
     if (state.location != null) {
-      console.log("A")
+      this.location = state.location
       this.requestList(state.location)
     } else {
-      console.log("B")
       locationStore.requestLocation()
     }
   }
-  requestList(location: Location) : void {
-    console.log("REQUET_LIST")
+  requestList() : void {
+    const location = this.location
     new SpotAction.RequestList(location).dispatch()
 
-    let url = "https://sparql.odp.jig.jp/data/sparql"
-    let query = "\
-      PREFIX jrrk:<http://purl.org/jrrk#>\
-      PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#>\
-      PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>\
-      PREFIX schema:<http://schema.org/>\
-      PREFIX odp:<http://odp.jig.jp/odp/1.0#>\
-      \
-      select * {\
-        ?s jrrk:jenre <http://odp.jig.jp/res/jenre/%E9%81%8A%E3%81%B6> ;\
-        rdf:label ?label ;\
-        geo:lat ?lat ;\
-        geo:long ?lon ;\
-        schema:image ?image.\
-        filter(LANG(?label)='ja' && ?lat >= 35.5 && ?lat <= 36) .\
+    const url = "https://sparql.odp.jig.jp/data/sparql"
+
+    let query : string
+    if (this.requireImage) {
+      query = "\
+        PREFIX jrrk:<http://purl.org/jrrk#>\
+        PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#>\
+        PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>\
+        PREFIX schema:<http://schema.org/>\
+        PREFIX odp:<http://odp.jig.jp/odp/1.0#>\
         \
-        OPTIONAL { ?s rdf:comment ?comment } .\
-        OPTIONAL { ?s jrrk:openingHours ?openingHours }.\
-        OPTIONAL { ?s odp:regularHoliday ?holiday } .\
-        OPTIONAL { ?s schema:price ?price }.\
-        OPTIONAL { ?s schema:description ?desc filter(LANG(?desc)='ja')} .\
-      } limit 100\
-      "
+        select * {\
+          ?s jrrk:jenre <http://odp.jig.jp/res/jenre/%E9%81%8A%E3%81%B6> ;\
+          rdf:label ?label ;\
+          geo:lat ?lat ;\
+          geo:long ?lon ;\
+          schema:image ?image.\
+          filter(LANG(?label)='ja' && ?lat >= 35.5 && ?lat <= 36) .\
+          \
+          OPTIONAL { ?s rdf:comment ?comment } .\
+          OPTIONAL { ?s jrrk:openingHours ?openingHours }.\
+          OPTIONAL { ?s odp:regularHoliday ?holiday } .\
+          OPTIONAL { ?s schema:price ?price }.\
+          OPTIONAL { ?s schema:description ?desc filter(LANG(?desc)='ja')} .\
+        } limit 100\
+        "
+    } else {
+      query = "\
+        PREFIX jrrk:<http://purl.org/jrrk#>\
+        PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#>\
+        PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>\
+        PREFIX schema:<http://schema.org/>\
+        PREFIX odp:<http://odp.jig.jp/odp/1.0#>\
+        \
+        select * {\
+          ?s jrrk:jenre <http://odp.jig.jp/res/jenre/%E9%A3%9F%E3%81%B9%E3%82%8B> ;\
+          rdf:label ?label ;\
+          geo:lat ?lat ;\
+          geo:long ?lon ;\
+          filter(LANG(?label)='ja' && ?lat >= 35.5 && ?lat <= 36) .\
+          \
+          OPTIONAL { ?s rdf:comment ?comment } .\
+          OPTIONAL { ?s jrrk:openingHours ?openingHours }.\
+          OPTIONAL { ?s odp:regularHoliday ?holiday } .\
+          OPTIONAL { ?s schema:price ?price }.\
+          OPTIONAL { ?s schema:image ?image }.\
+          OPTIONAL { ?s schema:description ?desc filter(LANG(?desc)='ja')} .\
+        } limit 100\
+        "
+
+    }
     let sendData = "query=" + encodeURIComponent(query)
 
     fetch(url, {
@@ -108,10 +135,8 @@ export default class SpotStore extends ReduceStore<SpotState> {
         return list.sort((a, b) => a.distance - b.distance)
       })
       .then(list => {
-        console.log("RECEIVED")
         new SpotAction.OnListReceived(location, list).dispatch()
       }, error => {
-        console.log("error:" + error)
         new SpotAction.OnFetchError(location, error).dispatch()
       })
       .done()

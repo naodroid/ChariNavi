@@ -71,7 +71,7 @@ export default class TopPage extends Component {
             onPress={() => this.onTabSelected(1)}
             />
           <TabArea
-            title="観光"
+            title="食事"
             image={require('../../img/ic_restaurant.png')}
             selected={this.state.selectedTab == 2}
             onPress={() => this.onTabSelected(2)}

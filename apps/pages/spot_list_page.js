@@ -14,7 +14,7 @@ import { List } from 'immutable'
 
 import SpotDetailPage from './spot_detail_page'
 
-import SpotImageCell from '../views/spot_image_cell'
+import MapImageCell from '../views/map_image_cell'
 import commonStyles, { cellStyles } from '../styles/common_styles'
 import elevations from '../styles/elevations'
 
@@ -45,14 +45,14 @@ export default class SpotListPage extends Component {
       loading : false,
       list : null,
     }
-    this.store = new SpotStore(dispatcher)
+    this.store = new SpotStore(null, false)
   }
   componentDidMount() {
-    this.store.requestListForCurrentLocation()
     this.storeSubscription = this.store.addListener(
       () => {this.onStateUpdated()},
       (error) => {}
     )
+    this.store.requestListForCurrentLocation()
   }
   componentWillUnmount() {
     this.storeSubscription.remove()
@@ -80,10 +80,10 @@ export default class SpotListPage extends Component {
   }
   renderRow(item : Spot) {
     return (
-      <SpotImageCell
+      <MapImageCell
+        location={item.location}
         name={item.name}
         distance={item.distance}
-        imageUrl={item.images[0]}
         onPress={() => this.onItemSelected(item)}
       />
     )

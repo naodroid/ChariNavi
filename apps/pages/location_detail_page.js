@@ -71,7 +71,6 @@ export default class LocationDetailPage extends Component {
 
   constructor() {
     super()
-    this.store = new SpotStore(dispatcher)
     this.state = {
       loading : false,
     }
@@ -79,11 +78,11 @@ export default class LocationDetailPage extends Component {
 
   componentDidMount() {
     let loc = this.props.route.location
-
+    this.store = new SpotStore(loc, true)
     this.storeSubscription = this.store.addListener(() => {
       this.onStateUpdated()
     })
-    this.store.requestList(loc)
+    this.store.requestListForCurrentLocation();
   }
   componentWillUnmount() {
     this.storeSubscription.remove()
